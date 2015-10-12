@@ -37,15 +37,32 @@ BOOL GetProcessList(){
 
 	do{
 		printf("PROCESS NAME: %s\n", pe32.szExeFile);
+		printf("Process Size: %lu\n", pe32.dwSize);
 	}while( Process32Next(hProcessSnap, &pe32));
 
+	return(TRUE);
+
+}
+
+
+BOOL CALLBACK EnumWindowsProc(HWND hWnd, long lParam) {
+    char buff[255];
+
+    if (IsWindowVisible(hWnd)) {
+        GetWindowText(hWnd, (LPSTR) buff, 254);
+        SetWindowPos( hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW );
+        printf("%s\n", buff);
+    }
+    return TRUE;
 }
 
 
 int main(int argc, CHAR* argv[]){
 	//DWORD procIDs[6];
 	//DWORD maxCount = 6;
-	BOOL result = GetProcessList();
+	//BOOL result = GetProcessList();
+	EnumWindows(EnumWindowsProc, 0);
+    return 0;
 	//cout << result << endl;
 	//cout << procIDs[0] << endl;
 	//cout << procIDs[1] << endl;
