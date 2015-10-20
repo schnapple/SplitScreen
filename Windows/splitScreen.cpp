@@ -37,7 +37,7 @@ BOOL GetProcessList(){
 
 	do{
 		printf("PROCESS NAME: %s\n", pe32.szExeFile);
-		printf("Process Size: %lu\n", pe32.dwSize);
+		//printf("Process Size: %lu\n", pe32.dwSize);
 	}while( Process32Next(hProcessSnap, &pe32));
 
 	return(TRUE);
@@ -45,12 +45,16 @@ BOOL GetProcessList(){
 }
 
 
-BOOL CALLBACK EnumWindowsProc(HWND hWnd, long lParam) {
+BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
     char buff[255];
+    char key[] = "Program Manager";
+    int x_pixels = GetSystemMetrics(SM_CXSCREEN);
+	int y_pixels = GetSystemMetrics(SM_CYSCREEN);
 
     if (IsWindowVisible(hWnd)) {
         GetWindowText(hWnd, (LPSTR) buff, 254);
-        SetWindowPos( hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW );
+        if(strcmp(buff, key) != 0)
+        	SetWindowPos( hWnd, HWND_NOTOPMOST, x_pixels/3, 0, x_pixels/3, y_pixels, SWP_SHOWWINDOW );
         printf("%s\n", buff);
     }
     return TRUE;
@@ -58,9 +62,11 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, long lParam) {
 
 
 int main(int argc, CHAR* argv[]){
-	//DWORD procIDs[6];
-	//DWORD maxCount = 6;
-	//BOOL result = GetProcessList();
+	
+	//GetProcessList();
+	int x_pixels = GetSystemMetrics(SM_CXSCREEN);
+	int y_pixels = GetSystemMetrics(SM_CYSCREEN);
+	//printf("%d\n", y_pixels);
 	EnumWindows(EnumWindowsProc, 0);
     return 0;
 	//cout << result << endl;
